@@ -131,12 +131,10 @@ jobs:
           if [ -z "$VERSION" ]; then VERSION="latest"; fi
           IMAGE=ghcr.io/${{ env.REPO_LOWER }}:$VERSION
 
-          # Запуск green версии
           docker run -d --name app-green -p 8081:8080 $IMAGE
           sleep 5
           curl --retry 5 --retry-delay 2 --fail http://localhost:8081/health || exit 1
 
-          # Переключение трафика
           docker stop app-blue 2>/dev/null || true
           docker run -d --name app-blue -p 8080:8080 $IMAGE
           sleep 3
